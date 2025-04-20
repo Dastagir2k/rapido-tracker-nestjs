@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/rapido-service/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/rapido-service/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/rapido-service",
+  "projects": {
+    "logging-service": {
+      "type": "application",
+      "root": "apps/logging-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/logging-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/logging-service/tsconfig.app.json"
+      }
+    },
+    "rapido-service": {
+      "type": "application",
+      "root": "apps/rapido-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/rapido-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rapido-service/tsconfig.app.json"
+      }
+    },
+    "rider-service": {
+      "type": "application",
+      "root": "apps/rider-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/rider-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rider-service/tsconfig.app.json"
+      }
+    }
+  }
+}
