@@ -5,14 +5,14 @@ import { HydratedDocument } from "mongoose";
 export type RiderCoordinatesDocument = HydratedDocument<RiderCoordinates>;
 
 @Schema()
-class RiderCoordinates {
+export class RiderCoordinates {
 
     // The @Prop decorator is used to define a property in the schema.
     @Prop({ required: true })
     lat:number;
 
     @Prop({ required: true })
-    lng:number;
+    log:number;
 
     @Prop({ required: true })
     riderId:string;

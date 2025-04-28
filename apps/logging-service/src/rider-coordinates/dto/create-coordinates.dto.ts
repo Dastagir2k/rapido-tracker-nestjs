@@ -4,11 +4,11 @@ export class createCoordinatesDTO{
 
     @IsNumber()
     @IsNotEmpty()
-    latitude: number;
+    lat: number;
 
     @IsNumber()
     @IsNotEmpty()
-    longitude: number;
+    log: number;
 
     @IsString() 
     @IsNotEmpty()
