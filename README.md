@@ -61,7 +61,7 @@ The services communicate using **TCP**. The **Logging Service** acts as a client
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Dastagir2k/rapido-tracker-nestjs.git
    cd rapido-service
    ```
 
