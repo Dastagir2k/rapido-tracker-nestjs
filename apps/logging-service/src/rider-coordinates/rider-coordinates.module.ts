@@ -1,14 +1,19 @@
 import { Module } from '@nestjs/common';
-import { RiderCoordinatesController } from './rider-coordinates.controller';
-import { RiderCoordinatesService } from './rider-coordinates.service';
-
-import { RiderCoordinatesSchema } from './schemas/rider-coordinates.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RiderCoordinatesService } from './rider-coordinates.service';
+import { RiderCoordinatesSchema } from './schemas/rider-coordinates.schema';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  // The MongooseModule is used to import the Mongoose module and register the RiderCoordinates schema.
-  imports: [MongooseModule.forFeature([{ name: 'RiderCoordinates', schema: RiderCoordinatesSchema }])],
-  controllers: [RiderCoordinatesController],
-  providers: [RiderCoordinatesService]
+  imports: [
+    MongooseModule.forFeature([
+      { name: 'RiderCoordinates', schema: RiderCoordinatesSchema },
+    ]),
+    ClientsModule.register([
+      { name: 'RIDER_SERVICE', transport: Transport.TCP }
+    ])
+  ],
+  providers: [RiderCoordinatesService],
+  exports: [RiderCoordinatesService],
 })
 export class RiderCoordinatesModule {}

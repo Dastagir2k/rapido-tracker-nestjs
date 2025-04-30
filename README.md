@@ -1,98 +1,166 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Microservices Application Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project demonstrates the implementation of a microservices-based architecture using [NestJS](https://nestjs.com). The application consists of multiple services that communicate with each other using **TCP**. The primary goal of this project is to learn how microservices work and to explore the integration of logging and rider services.
 
-## Description
+## Services
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 1. Logging Service
+The **Logging Service** is responsible for managing and storing rider coordinates. It also communicates with the **Rider Service** to fetch rider details.
 
-## Project setup
+#### Features:
+- Save rider coordinates to the database.
+- Retrieve rider coordinates along with rider details from the **Rider Service**.
+- Uses **MongoDB** for data persistence.
+- Implements **TCP** communication to interact with the **Rider Service**.
 
+#### APIs:
+- **GET /rider-coordinates/:id**  
+  Fetches rider coordinates and rider details for the given rider ID.
+- **POST /rider-coordinates**  
+  Saves rider coordinates to the database.
+
+---
+
+### 2. Rider Service
+The **Rider Service** is responsible for managing rider information. It listens for **TCP** commands from other services and provides rider details.
+
+#### Features:
+- Responds to TCP commands to fetch rider details.
+- Simulates rider data for demonstration purposes.
+
+#### TCP Command:
+- **Command:** `{ cmd: 'getRider' }`  
+  **Payload:** `{ riderId: string }`  
+  **Response:** Rider details (e.g., ID, first name, last name, email).
+
+---
+
+## Architecture
+
+### Communication
+The services communicate using **TCP**. The **Logging Service** acts as a client and sends requests to the **Rider Service**, which acts as a server.
+
+### Database
+- **Logging Service** uses **MongoDB** to store rider coordinates.
+- **Rider Service** does not use a database but simulates rider data.
+
+### Validation
+- **Logging Service** uses `class-validator` to validate incoming data for APIs.
+
+---
+
+## How to Run
+
+### Prerequisites
+- Node.js (v16 or higher)
+- MongoDB instance
+- NestJS CLI
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd rapido-service
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the services:
+   - **Rider Service**:
+     ```bash
+     npm run start --prefix apps/rider-service
+     ```
+   - **Logging Service**:
+     ```bash
+     npm run start --prefix apps/logging-service
+     ```
+
+4. Access the APIs:
+   - Logging Service: `http://localhost:3002`
+   - Rider Service: Listens for TCP commands on `localhost:3000`.
+
+---
+
+## Example Usage
+
+### Save Rider Coordinates
+**Request:**
 ```bash
-$ npm install
+POST /rider-coordinates
+Content-Type: application/json
+
+{
+  "lat": 40.7128,
+  "log": -74.0060,
+  "riderId": "12345"
+}
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+**Response:**
+```json
+{
+  "_id": "64f8c2e7b5d1c2a1e8f9a123",
+  "lat": 40.7128,
+  "log": -74.0060,
+  "riderId": "12345",
+  "__v": 0
+}
 ```
 
-## Run tests
+---
 
+### Get Rider Coordinates and Details
+**Request:**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+GET /rider-coordinates/12345
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+**Response:**
+```json
+{
+  "coordinates": [
+    {
+      "_id": "64f8c2e7b5d1c2a1e8f9a123",
+      "lat": 40.7128,
+      "log": -74.0060,
+      "riderId": "12345",
+      "__v": 0
+    }
+  ],
+  "rider": {
+    "id": "12345",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jane@gmail.com"
+  }
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## Learning Objectives
 
-Check out a few resources that may come in handy when working with NestJS:
+- Understand how microservices communicate using **TCP**.
+- Learn how to implement **NestJS** microservices.
+- Explore the integration of **MongoDB** for data persistence.
+- Gain hands-on experience with **class-validator** for data validation.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Future Enhancements
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Add authentication and authorization.
+- Implement a centralized logging mechanism.
+- Use a message broker (e.g., RabbitMQ or Kafka) for asynchronous communication.
+- Add more services to expand the microservices ecosystem.
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.

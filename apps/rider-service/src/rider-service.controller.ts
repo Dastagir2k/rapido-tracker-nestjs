@@ -1,12 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RiderServiceService } from './rider-service.service';
 
-@Controller()
+@Controller("rider")
 export class RiderServiceController {
   constructor(private readonly riderServiceService: RiderServiceService) {}
 
-  @Get()
-  getHello(): string {
-    return this.riderServiceService.getHello();
-  }
+  @MessagePattern({ cmd: 'getRider' }) // <-- this listens for TCP command
+ async getRiderById(
+ 
+  data: any
+) {
+    console.log("Received data:", data);
+    return Promise.resolve({ id: data.id, firstName: 'Jane', lastName: 'Doe', email: 'jane@gmail.com' })
+  } 
 }
